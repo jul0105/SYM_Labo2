@@ -9,8 +9,7 @@ import java.net.URL
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
     fun sendRequest(url: String, request: String) {
-        val url = URL("http://www.android.com/")
-        val urlConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        val urlConnection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
         try {
             val input: InputStream = BufferedInputStream(urlConnection.getInputStream())
             val isw = InputStreamReader(input)

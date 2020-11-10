@@ -11,7 +11,7 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
         setContentView(R.layout.activity_asynchrone)
 
         val sm = SymComManager(this)
-        sm.sendRequest("http://sym.iict.ch/rest/txt/", "")
+        sm.sendRequest("http://sym.iict.ch/rest/txt/", "les gros boloss")
     }
 
     override fun handleServerResponse(response: String) {

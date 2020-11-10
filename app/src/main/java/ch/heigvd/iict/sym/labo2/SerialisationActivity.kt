@@ -27,12 +27,11 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
                 val Person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
-               serialisedData = "<xml>";
-                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData);
-
+                serialisedData = "<xml>";
+                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
                 serialisedData = "{'test','test'}";
-                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData);
+                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData,"application/json");
             }
 
 

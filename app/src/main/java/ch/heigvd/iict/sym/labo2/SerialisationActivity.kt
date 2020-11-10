@@ -4,6 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 
+import com.fasterxml.jackson.core.JsonGenerationException
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import java.io.File
+
+
 class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     private lateinit var send_button: Button;
     private lateinit var radio_group: RadioGroup;
@@ -26,8 +34,9 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         send_button.setOnClickListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-                val Person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
-                serialisedData = "<xml>";
+                val person = person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
+                serialisedData = writeXmlToString(person)
+                println(serialisedData)
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
                 
@@ -43,9 +52,10 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
 
     override fun handleServerResponse(response: String) {
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-            received_text.text = parseXML(response);
+            val person = writeXmlToObject(response, person::class.java)
+            received_text.text = parseXML(person.firstname + person.name);
 
-        } else { // JSON
+        } else { // JSONPerson
             received_text.text = parseJSON(response);
         }
     }
@@ -63,7 +73,7 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         val phoneNumber: String = ""
     )
 
-    data class Person(
+    data class person(
         val name: String = "",
         val firstname: String = "",
         val middlename: String = "",
@@ -71,4 +81,15 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         val phone: Phone? = null
 
     )
+
+    fun writeXmlToString(obj: Any): String {
+        val xmlMapper = XmlMapper()
+        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT)
+        return xmlMapper.writeValueAsString(obj)
+    }
+
+    fun writeXmlToObject(pathFile: String, cls: Class<person>) : person{
+        val xmlMapper = XmlMapper()
+        return xmlMapper.readValue(File(pathFile), cls)
+    }
 }

@@ -26,8 +26,10 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         send_button.setOnClickListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
+                val Person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
                serialisedData = "<xml>";
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData);
+
             } else  {
                 serialisedData = "{'test','test'}";
                 sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData);
@@ -42,6 +44,7 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     override fun handleServerResponse(response: String) {
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
             received_text.text = parseXML(response);
+
         } else { // JSON
             received_text.text = parseJSON(response);
         }
@@ -54,4 +57,18 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     fun parseJSON(data: String) : String {
         return "Json";
     }
+
+    data class Phone(
+        val phoneType: String = "",
+        val phoneNumber: String = ""
+    )
+
+    data class Person(
+        val name: String = "",
+        val firstname: String = "",
+        val middlename: String = "",
+        val gender: String = "",
+        val phone: Phone? = null
+
+    )
 }

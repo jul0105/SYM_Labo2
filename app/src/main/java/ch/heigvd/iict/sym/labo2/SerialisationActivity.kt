@@ -1,8 +1,15 @@
 package ch.heigvd.iict.sym.labo2
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.*
+import android.util.JsonReader
+import android.util.Log
+import android.widget.Button
+import android.widget.RadioGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import java.io.InputStreamReader
+
 
 class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     private lateinit var send_button: Button;
@@ -30,9 +37,9 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
                 serialisedData = "<xml>";
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
-                
-                serialisedData = "{'test','test'}";
-                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData,"application/json");
+                val person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
+                val jsonString = Gson().toJson(person)
+                sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
             }
 
 
@@ -46,7 +53,8 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
             received_text.text = parseXML(response);
 
         } else { // JSON
-            received_text.text = parseJSON(response);
+            val person = parseJSON(response);
+            received_text.text = "Hello " +person.firstname + " ," + person.name;
         }
     }
 
@@ -54,9 +62,11 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         return "<xml>";
     }
 
-    fun parseJSON(data: String) : String {
-        return "Json";
+    fun parseJSON(data: String) : Person {
+        val person = Gson().fromJson(data,Person::class.java)
+        return person
     }
+
 
     data class Phone(
         val phoneType: String = "",
@@ -71,4 +81,6 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         val phone: Phone? = null
 
     )
+
+
 }

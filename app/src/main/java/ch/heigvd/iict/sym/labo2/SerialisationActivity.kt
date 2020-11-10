@@ -11,6 +11,14 @@ import com.google.gson.Gson
 import java.io.InputStreamReader
 
 
+import com.fasterxml.jackson.core.JsonGenerationException
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonMappingException
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import java.io.File
+
+
 class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     private lateinit var send_button: Button;
     private lateinit var radio_group: RadioGroup;
@@ -33,8 +41,9 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         send_button.setOnClickListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-                val Person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
-                serialisedData = "<xml>";
+                val person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
+                serialisedData = writeXmlToString(person)
+                println(serialisedData)
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
                 val person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
@@ -50,8 +59,8 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
 
     override fun handleServerResponse(response: String) {
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-            received_text.text = parseXML(response);
-
+            val person = writeXmlToObject(response, Person::class.java)
+            received_text.text = parseXML(person.firstname + person.name);
         } else { // JSON
             val person = parseJSON(response);
             received_text.text = "Hello " +person.firstname + " ," + person.name;
@@ -82,5 +91,14 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
 
     )
 
+    fun writeXmlToString(obj: Any): String {
+        val xmlMapper = XmlMapper()
+        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT)
+        return xmlMapper.writeValueAsString(obj)
+    }
 
+    fun writeXmlToObject(pathFile: String, cls: Class<Person>) : Person{
+        val xmlMapper = XmlMapper()
+        return xmlMapper.readValue(File(pathFile), cls)
+    }
 }

@@ -27,18 +27,31 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
                serialisedData = "<xml>";
+                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData);
             } else  {
                 serialisedData = "{'test','test'}";
+                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData);
             }
 
 
-            sm.sendRequest("http://sym.iict.ch/rest/txt/", serialisedData);
+
 
         }
     }
 
     override fun handleServerResponse(response: String) {
-        received_text.text = response;
+        if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
+            received_text.text = parseXML(response);
+        } else { // JSON
+            received_text.text = parseJSON(response);
+        }
     }
 
+    fun parseXML(data: String): String {
+        return "<xml>";
+    }
+
+    fun parseJSON(data: String) : String {
+        return "Json";
+    }
 }

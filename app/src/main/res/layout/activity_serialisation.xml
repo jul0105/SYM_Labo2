@@ -51,13 +51,15 @@
 
     <TextView
         android:id="@+id/received_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="163dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginLeft="164dp"
         android:text="received text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/send_button" />
+        app:layout_constraintTop_toBottomOf="@+id/send_button"
+        app:layout_constraintVertical_bias="0.456" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

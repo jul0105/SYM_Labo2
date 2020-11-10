@@ -29,6 +29,7 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
                serialisedData = "<xml>";
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
+                
                 serialisedData = "{'test','test'}";
                 sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData,"application/json");
             }

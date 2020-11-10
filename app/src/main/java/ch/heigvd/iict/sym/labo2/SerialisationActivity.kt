@@ -27,10 +27,10 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
                serialisedData = "<xml>";
-                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData);
+                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
                 serialisedData = "{'test','test'}";
-                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData);
+                sm.sendRequest("http://sym.iict.ch/rest/json/", serialisedData,"application/json");
             }
 
 

@@ -28,7 +28,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 //        }
 //    }
 
-    fun sendRequest(url: String, request: String) {
+    fun sendRequest(url: String, request: String, content_type: String = "text/plain") {
         object : Thread() {
             override fun run() {
 
@@ -41,7 +41,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
                 connection.setRequestProperty("charset", "utf-8")
                 connection.setRequestProperty("Content-lenght", postData.size.toString())
-                connection.setRequestProperty("Content-Type", "text/plain")
+                connection.setRequestProperty("Content-Type", content_type)
 
 
                 // send request

@@ -1,22 +1,19 @@
 package ch.heigvd.iict.sym.labo2
 
 import android.os.Bundle
-import android.util.JsonReader
-import android.util.Log
 import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import java.io.InputStreamReader
 
 
-import com.fasterxml.jackson.core.JsonGenerationException
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import java.io.File
+import javax.xml.bind.annotation.XmlAccessorOrder
 
 
 class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
@@ -41,12 +38,13 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         send_button.setOnClickListener {
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-                val person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
-                serialisedData = writeXmlToString(person)
+                val person = Person("Daubresse", "Gaetan", "Joel", "male", "0796875432", "mobile");
+                val people = listOf<Person>(person)
+                serialisedData = SerializeRequest.parseXML(people)
                 println(serialisedData)
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             } else  {
-                val person = Person("Daubresse", "Gaetan", "Joel", "male", Phone("mobile", "0793342321"))
+                val person = Person("Daubresse", "Gaetan", "Joel", "male", "0793345432", "mobile")
                 val jsonString = Gson().toJson(person)
                 sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
             }
@@ -60,36 +58,14 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     override fun handleServerResponse(response: String) {
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
             val person = writeXmlToObject(response, Person::class.java)
-            received_text.text = parseXML(person.firstname + person.name);
+            received_text.text = ""
         } else { // JSON
-            val person = parseJSON(response);
+            val person = SerializeRequest.parseJSON(response);
             received_text.text = "Hello " +person.firstname + " ," + person.name;
         }
     }
 
-    fun parseXML(data: String): String {
-        return "<xml>";
-    }
 
-    fun parseJSON(data: String) : Person {
-        val person = Gson().fromJson(data,Person::class.java)
-        return person
-    }
-
-
-    data class Phone(
-        val phoneType: String = "",
-        val phoneNumber: String = ""
-    )
-
-    data class Person(
-        val name: String = "",
-        val firstname: String = "",
-        val middlename: String = "",
-        val gender: String = "",
-        val phone: Phone? = null
-
-    )
 
     fun writeXmlToString(obj: Any): String {
         val xmlMapper = XmlMapper()

@@ -28,7 +28,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 //        }
 //    }
 
-    fun sendRequest(url: String, request: String, content_type: String = "text/plain") {
+    fun sendRequest(url: String, request: String, content_type: String = "text/plain", compressed: Boolean = false) {
         object : Thread() {
             override fun run() {
 
@@ -36,6 +36,13 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                 val connection = URL(serverURL).openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.doOutput = true
+
+/*                if(compressed){
+
+                }
+                else{
+                    val postData: ByteArray = request.toByteArray(UTF_8)
+                }*/
 
                 val postData: ByteArray = request.toByteArray(UTF_8)
 

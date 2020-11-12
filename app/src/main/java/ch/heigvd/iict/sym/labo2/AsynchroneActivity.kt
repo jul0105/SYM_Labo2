@@ -13,6 +13,7 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
     private lateinit var text_input: EditText;
     private lateinit var received_text: TextView;
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
 
@@ -26,7 +27,6 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
 
         val sm = SymComManager(this)
 
-
         send_button.setOnClickListener {
             sm.sendRequest("http://sym.iict.ch/rest/txt/", text_input.text.toString());
 
@@ -39,3 +39,5 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
 
 
 }
+
+

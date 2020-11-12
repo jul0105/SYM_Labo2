@@ -48,33 +48,16 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
                 val jsonString = Gson().toJson(person)
                 sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
             }
-
-
-
-
         }
     }
 
     override fun handleServerResponse(response: String) {
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-            val person = writeXmlToObject(response, Person::class.java)
-            received_text.text = ""
+            //TODO Serialiser la response
+            received_text.text = response
         } else { // JSON
             val person = SerializeRequest.parseJSON(response);
             received_text.text = "Hello " +person.firstname + " ," + person.name;
         }
-    }
-
-
-
-    fun writeXmlToString(obj: Any): String {
-        val xmlMapper = XmlMapper()
-        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT)
-        return xmlMapper.writeValueAsString(obj)
-    }
-
-    fun writeXmlToObject(pathFile: String, cls: Class<Person>) : Person{
-        val xmlMapper = XmlMapper()
-        return xmlMapper.readValue(File(pathFile), cls)
     }
 }

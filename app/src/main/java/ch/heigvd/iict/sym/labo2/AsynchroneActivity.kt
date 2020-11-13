@@ -34,7 +34,7 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
     }
 
     override fun handleServerResponse(response: String) {
-       received_text.text = response;
+        received_text.text = response;
     }
 
 

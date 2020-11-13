@@ -30,20 +30,24 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
         received_text = findViewById(R.id.received_text);
         radio_group = findViewById(R.id.radioGroup);
 
-
-
         val sm = SymComManager(this)
 
-
         send_button.setOnClickListener {
+
             var serialisedData: String;
             if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-                val person = Person("Daubresse", "Gaetan", "Joel", "male", "0796875432", "mobile");
-                val people = listOf<Person>(person)
+
+                val person1 = Person(name = "Cuenoud", firstname = "Robin", gender = "male", phone = "0795643255", phoneType = "mobile")
+                val person2 = Person(name = "Beguin", firstname = "Julien", gender = "male", phone = "0786759988", phoneType = "mobile")
+                val person3 = Person("Daubresse", "Gaetan", "Joel", "male", "0796875432", "mobile");
+                val people = listOf<Person>(person1, person2, person3)
+
                 serialisedData = SerializeRequest.parseXML(people)
                 println(serialisedData)
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
-            } else  {
+            }
+            else  {
+
                 val person = Person("Daubresse", "Gaetan", "Joel", "male", "0793345432", "mobile")
                 val jsonString = Gson().toJson(person)
                 sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
@@ -52,10 +56,12 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     }
 
     override fun handleServerResponse(response: String) {
+
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
             //TODO Serialiser la response
             received_text.text = response
-        } else { // JSON
+        }
+        else { // JSON
             val person = SerializeRequest.parseJSON(response);
             received_text.text = "Hello " +person.firstname + " ," + person.name;
         }

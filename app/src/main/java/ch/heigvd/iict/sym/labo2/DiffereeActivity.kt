@@ -9,10 +9,12 @@ import android.widget.EditText
 import android.widget.TextView
 import java.util.stream.DoubleStream.builder
 
-class DiffereeActivity : AppCompatActivity() {
-    private lateinit var send_button: Button;
-    private lateinit var text_input: EditText;
-    private lateinit var received_text: TextView;
+class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
+    private lateinit var send_button: Button
+    private lateinit var text_input: EditText
+    private lateinit var received_text: TextView
+    private var receivedResponse = false
+    private var messageToSend = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
@@ -23,6 +25,32 @@ class DiffereeActivity : AppCompatActivity() {
         text_input = findViewById(R.id.send_text);
         received_text = findViewById(R.id.received_text);
 
-        //JobInfo.Builder b = new JobInfo.Builder(1,new ComponentName(this,MyJobService.class))
+        val sm = SymComManager(this)
+
+        // if button pressed new thread send message to the server every 5 sec until response arrive
+        send_button.setOnClickListener {
+
+            messageToSend = text_input.text.toString()
+
+            object: Thread(){
+                override fun run(){
+                    while(!receivedResponse){
+                        try{
+                            sm.sendRequest("http://sym.iict.ch/rest/txt/", messageToSend);
+                        }catch(e: Exception){
+                            e.printStackTrace()
+                        }
+                        Thread.sleep(5000);
+                    }
+                }
+            }.start()
+        }
     }
+
+    override fun handleServerResponse(response: String) {
+        receivedResponse = true
+        received_text.text = response;
+    }
+
+
 }

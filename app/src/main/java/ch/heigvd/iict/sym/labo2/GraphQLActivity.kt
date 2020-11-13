@@ -32,8 +32,9 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
             sm.sendRequest(
                 "http://sym.iict.ch/api/graphql",
-                "{\"query\":\"{{allPostByAuthor(authorId:" + listItems.get(position).id + "){id title description content date}}\"}"
+                "{\"query\":\"{allPostByAuthor(authorId: " + listItems.get(position).id +" ){id title description content date}}\"}"
             );
+
         }
 
 
@@ -48,18 +49,24 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
         val reader = JSONObject(response)
 
-
+            println(response)
             val data = reader.getJSONObject("data")
-        //data.getJSONArray("")
+            // get authors if allAuthors executed
             val authors = data.getJSONArray("allAuthors")
-            for (i in 0 until authors.length()) {
-                val author = authors.getJSONObject(i)
-                val aut = Author(
-                    author.getInt("id"),
-                    author.getString("first_name"),
-                    author.getString("last_name")
-                )
-                listItems.add(aut)
+            if(authors != null) {
+                for (i in 0 until authors.length()) {
+                    val author = authors.getJSONObject(i)
+                    val aut = Author(
+                        author.getInt("id"),
+                        author.getString("first_name"),
+                        author.getString("last_name")
+                    )
+                    listItems.add(aut)
+                }
+            } else {
+                val publication = data.getJSONArray("??");
+
+                println(response)
             }
             adapter.notifyDataSetChanged()
 

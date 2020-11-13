@@ -1,15 +1,18 @@
 package ch.heigvd.iict.sym.labo2
 
 import android.os.Bundle
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import org.json.JSONObject
 
 
 class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
-    private lateinit var list_view : ListView;
+    private lateinit var list_view: ListView;
 
     val listItems = ArrayList<Author>()
     lateinit var adapter: ArrayAdapter<Author>
@@ -24,11 +27,18 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
 
         list_view.adapter = adapter
-
-
         val sm = SymComManager(this)
+        list_view.setOnItemClickListener { parent, view, position, id ->
 
-        sm.sendRequest("http://sym.iict.ch/api/graphql",
+            sm.sendRequest(
+                "http://sym.iict.ch/api/graphql",
+                "{\"query\":\"{{allPostByAuthor(authorId:" + listItems.get(position).id + "){id title description content date}}\"}"
+            );
+        }
+
+
+        sm.sendRequest(
+            "http://sym.iict.ch/api/graphql",
             "{\"query\":\"{allAuthors {id first_name last_name}}\"}"
         );
 
@@ -38,21 +48,21 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
         val reader = JSONObject(response)
 
-        val data = reader.getJSONObject("data")
-        val authors = data.getJSONArray("allAuthors")
-        for (i in 0 until authors.length()) {
-            val author = authors.getJSONObject(i)
-            val aut = Author(
-                author.getInt("id"),
-                author.getString("first_name"),
-                author.getString("last_name")
-            )
-            listItems.add(aut)
-        }
 
+            val data = reader.getJSONObject("data")
+        //data.getJSONArray("")
+            val authors = data.getJSONArray("allAuthors")
+            for (i in 0 until authors.length()) {
+                val author = authors.getJSONObject(i)
+                val aut = Author(
+                    author.getInt("id"),
+                    author.getString("first_name"),
+                    author.getString("last_name")
+                )
+                listItems.add(aut)
+            }
+            adapter.notifyDataSetChanged()
 
-
-        adapter.notifyDataSetChanged()
     }
 }
 

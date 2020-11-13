@@ -1,38 +1,40 @@
 package ch.heigvd.iict.sym.labo2
 
 import android.os.Bundle
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import org.json.JSONObject
 
 
 class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
-    private lateinit var list_view: ListView;
+    private lateinit var list_view_authors: ListView;
+    private lateinit var list_view_publication: ListView;
 
     val listItems = ArrayList<Author>()
-    lateinit var adapter: ArrayAdapter<Author>
+    val listPublications = ArrayList<Publication>()
+    lateinit var adapterAuthor: ArrayAdapter<Author>
+    lateinit var adapterPublication: ArrayAdapter<Publication>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph_q_l)
 
-        list_view = findViewById(R.id.listView);
+        list_view_authors = findViewById(R.id.listViewAuthors);
+        list_view_publication = findViewById(R.id.listViewPublication);
 
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
+        adapterAuthor = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
+        adapterPublication = ArrayAdapter(this, android.R.layout.simple_list_item_2, listPublications)
 
-
-        list_view.adapter = adapter
+        list_view_authors.adapter = adapterAuthor
+        list_view_publication.adapter = adapterPublication
         val sm = SymComManager(this)
-        list_view.setOnItemClickListener { parent, view, position, id ->
+        list_view_authors.setOnItemClickListener { parent, view, position, id ->
 
             sm.sendRequest(
                 "http://sym.iict.ch/api/graphql",
-                "{\"query\":\"{allPostByAuthor(authorId: " + listItems.get(position).id +" ){id title description content date}}\"}"
+                "{\"query\":\"{allPostByAuthor(authorId: " + listItems[position].id +" ){id title description content date}}\"}"
             );
 
         }
@@ -49,11 +51,13 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
         val reader = JSONObject(response)
 
-            println(response)
+
             val data = reader.getJSONObject("data")
             // get authors if allAuthors executed
-            val authors = data.getJSONArray("allAuthors")
-            if(authors != null) {
+
+
+            if(response.contains("allAuthors")) {
+                val authors = data.getJSONArray("allAuthors")
                 for (i in 0 until authors.length()) {
                     val author = authors.getJSONObject(i)
                     val aut = Author(
@@ -63,12 +67,23 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
                     )
                     listItems.add(aut)
                 }
-            } else {
-                val publication = data.getJSONArray("??");
+                adapterAuthor.notifyDataSetChanged()
 
-                println(response)
+            } else {
+                val posts = data.getJSONArray("allPostByAuthor")
+                for (i in 0 until posts.length()) {
+                    val author = posts.getJSONObject(i)
+                    val aut = Publication(
+                        author.getInt("id"),
+                        author.getString("title"),
+                        author.getString("description")
+                    )
+                    listPublications.add(aut)
+                }
+                adapterPublication.notifyDataSetChanged()
             }
-            adapter.notifyDataSetChanged()
+
+
 
     }
 }
@@ -77,6 +92,11 @@ data class AuthorList(val author_list: ArrayList<Author>)
 data class Author(val id : Int, val first_name : String, val last_name : String) {
     override fun toString(): String {
         return this.first_name + " " + this.last_name;
+    }
+}
+data class Publication(val id: Int, val title: String, val description: String) {
+    override fun toString(): String {
+        return this.title + " : " + this.description;
     }
 }
 

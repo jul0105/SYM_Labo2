@@ -6,24 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".GraphQLActivity">
 
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="graphQL"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="GraphQL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="graphQL" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/listView"
-        android:layout_width="409dp"
-        android:layout_height="354dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/listViewAuthors"
+        android:layout_width="195dp"
+        android:layout_height="185dp"
+        android:background="#4BD18B8B"
+        app:layout_constraintBottom_toTopOf="@+id/_dynamic"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
+    <ListView
+        android:id="@+id/listViewPublication"
+        android:layout_width="184dp"
+        android:layout_height="57dp"
+        android:background="#AC2121"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listViewAuthors" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Publication"
+        app:layout_constraintBottom_toTopOf="@+id/listViewPublication"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listViewAuthors" />
 </androidx.constraintlayout.widget.ConstraintLayout>

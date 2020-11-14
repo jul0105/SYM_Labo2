@@ -8,5 +8,8 @@ class Person (
     val phone: String,
     val phoneType: String
 ){
+    override fun toString(): String{
+        return name + ", " + firstname + ", " + gender + ", " + phone
+    }
 }
 

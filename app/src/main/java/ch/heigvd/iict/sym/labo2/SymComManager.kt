@@ -44,12 +44,12 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                 try {
                     val inputStream: DataInputStream = DataInputStream(connection.inputStream)
                     val reader: BufferedReader = BufferedReader(InputStreamReader(inputStream))
-                    val output: String = reader.readLine()
+                    val output: String = reader.readText()
 
                     communicationEventListener?.handleServerResponse(output);
 
                 } catch (exception: Exception) {
-
+                    exception.printStackTrace()
                 }
 
 

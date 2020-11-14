@@ -30,8 +30,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
 
                 connection.setRequestProperty("charset", "utf-8")
                 connection.setRequestProperty("Content-lenght", postData.size.toString())
-//                connection.setRequestProperty("Content-Type", content_type)
-                connection.setRequestProperty("Content-Type", "$content_type;charset=utf-8")
+                connection.setRequestProperty("Content-Type", content_type)
                 if (compressed) {
                     connection.setRequestProperty("X-Network", "CSD")
                     connection.setRequestProperty("X-Content-Encoding", "deflate");

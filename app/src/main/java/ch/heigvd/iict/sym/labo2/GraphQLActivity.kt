@@ -25,7 +25,7 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
         list_view_publication = findViewById(R.id.listViewPublication);
 
         adapterAuthor = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
-        adapterPublication = ArrayAdapter(this, android.R.layout.simple_list_item_2, listPublications)
+        adapterPublication = ArrayAdapter(this, android.R.layout.simple_list_item_1, listPublications)
 
         list_view_authors.adapter = adapterAuthor
         list_view_publication.adapter = adapterPublication
@@ -48,43 +48,37 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
     }
 
     override fun handleServerResponse(response: String) {
-
         val reader = JSONObject(response)
 
+        val data = reader.getJSONObject("data")
+        // get authors if allAuthors executed
 
-            val data = reader.getJSONObject("data")
-            // get authors if allAuthors executed
-
-
-            if(response.contains("allAuthors")) {
-                val authors = data.getJSONArray("allAuthors")
-                for (i in 0 until authors.length()) {
-                    val author = authors.getJSONObject(i)
-                    val aut = Author(
-                        author.getInt("id"),
-                        author.getString("first_name"),
-                        author.getString("last_name")
-                    )
-                    listItems.add(aut)
-                }
-                adapterAuthor.notifyDataSetChanged()
-
-            } else {
-                val posts = data.getJSONArray("allPostByAuthor")
-                for (i in 0 until posts.length()) {
-                    val author = posts.getJSONObject(i)
-                    val aut = Publication(
-                        author.getInt("id"),
-                        author.getString("title"),
-                        author.getString("description")
-                    )
-                    listPublications.add(aut)
-                }
-                adapterPublication.notifyDataSetChanged()
+        if(response.contains("allAuthors")) {
+            val authors = data.getJSONArray("allAuthors")
+            for (i in 0 until authors.length()) {
+                val author = authors.getJSONObject(i)
+                val aut = Author(
+                    author.getInt("id"),
+                    author.getString("first_name"),
+                    author.getString("last_name")
+                )
+                listItems.add(aut)
             }
+            adapterAuthor.notifyDataSetChanged()
 
-
-
+        } else {
+            val posts = data.getJSONArray("allPostByAuthor")
+            for (i in 0 until posts.length()) {
+                val author = posts.getJSONObject(i)
+                val aut = Publication(
+                    author.getInt("id"),
+                    author.getString("title"),
+                    author.getString("description")
+                )
+                listPublications.add(aut)
+            }
+            adapterPublication.notifyDataSetChanged()
+        }
     }
 }
 

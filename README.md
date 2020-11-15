@@ -12,12 +12,6 @@ Ce deuxième laboratoire consiste à implémenter 5 manières différentes de co
 
 
 
-## Remarque sur l'implémentation
-
-TODO
-
-
-
 ## Réponses aux questions
 
 ### Traitement des erreurs
@@ -32,6 +26,8 @@ Nous pourrions améliorer le comportement en vérifiant au préalable si le tél
 Si le serveur renvoie un code d'erreur il y'a également un exception qui est levée. 
 
 Une amélioration que nous pourrions imaginer consisterai à remonter le code d'erreur à l'utilisateur ou d'effectuer un traitement différents suivant le code d'erreur retourné.
+
+
 
 ### Authentification
 
@@ -93,6 +89,8 @@ Son avantage premier est sa légèreté comparé au JSON et XML. Il est égaleme
 
 Nous pouvons observer que certaines grandes requêtes peuvent consommer beaucoup de donnée. Une solution pourrait être de garder en cache les réponses afin d'économiser les ressources. Il faudrait néanmoins vérifier que la base de donnée n'a pas changé entre temps. Nous pourrions également faire de la compression. 
 
+
+
 ### Transmission compressée
 
 > Quel gain de compression (en volume et en temps) peut-on constater en moyenne sur des fichiers texte (xml et json sont aussi du texte) en utilisant de la compression du point 3.4 ? Vous comparerez plusieurs tailles et types de contenu.
@@ -111,6 +109,16 @@ On peut constater que plus le nombre de caractères est grand, plus le gain en t
 A l'opposer, lorsque le nombre de caractère est très faible (< 50 caractères), le gain est négatif. Cela signifie que la taille du texte compressé est plus grande que la taille du texte original. Dans ce cas la, il est préférable de ne pas compresser le contenu.
 
 A noter que nous avons également effectué ce test avec du contenu de type xml et json et les résultats sont similaires.
+
+
+
+## Problèmes connus
+
+- Sur l'activité GraphQL, il est nécessaire de cliquer sur les ListViews pour actualiser leurs contenus.
+
+- Sur l'activité différée, il est nécessaire de recharger l'activité pour envoyer un deuxième message.
+
+
 
 ## Conclusion
 

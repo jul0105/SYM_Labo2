@@ -26,7 +26,7 @@ class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_asynchrone)
+        setContentView(R.layout.activity_differee)
 
         send_button = findViewById(R.id.send_button);
         text_input = findViewById(R.id.send_text);

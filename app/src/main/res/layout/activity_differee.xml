@@ -13,16 +13,16 @@
         android:layout_marginStart="160dp"
         android:layout_marginLeft="160dp"
         android:layout_marginBottom="8dp"
-        android:text="Received text"
+        android:text="Received text :"
         app:layout_constraintBottom_toTopOf="@+id/received_text"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/received_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:text="received text"
+        android:layout_width="365dp"
+        android:layout_height="291dp"
+        android:layout_marginTop="148dp"
+        android:background="#BC6767"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,10 +43,10 @@
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="48dp"
         android:text="send :)"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/send_text" />
 

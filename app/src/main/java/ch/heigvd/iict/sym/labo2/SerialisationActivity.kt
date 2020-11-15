@@ -1,19 +1,11 @@
 package ch.heigvd.iict.sym.labo2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
-
-
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
-import java.io.File
-import javax.xml.bind.annotation.XmlAccessorOrder
 
 
 class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
@@ -42,14 +34,13 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
                 val person3 = Person("Daubresse", "Gaetan", "Joel", "male", "0796875432", "mobile");
                 val people = listOf<Person>(person1, person2, person3)
 
-                serialisedData = SerializeRequest.parseXML(people)
-                println(serialisedData)
+                serialisedData = ParseRequest.serializeXML(people)
                 sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
             }
             else  {
 
                 val person = Person("Daubresse", "Gaetan", "Joel", "male", "0793345432", "mobile")
-                val jsonString = Gson().toJson(person)
+                val jsonString = ParseRequest.serializeJSON(person)
                 sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
             }
         }
@@ -58,11 +49,16 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
     override fun handleServerResponse(response: String) {
 
         if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
-            //TODO Serialiser la response
-            received_text.text = response
+            val listPerson = ParseRequest.deserializeXML(response)
+            var responseFormated: String = ""
+            responseFormated += "Hello "
+            for(person in listPerson){
+                responseFormated += (person.firstname + " ")
+            }
+            received_text.text = responseFormated
         }
         else { // JSON
-            val person = SerializeRequest.parseJSON(response);
+            val person = ParseRequest.deserializeJSON(response);
             received_text.text = "Hello " +person.firstname + " ," + person.name;
         }
     }

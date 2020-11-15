@@ -1,13 +1,22 @@
+/**
+ * SYM : Labo 2 - Protocoles applicatifs
+ * Auteurs : Julien Béguin, Robin Cuénoud & Gaëtan Daubresse
+ * Date : 15.11.2020
+ * Classe : B
+ */
+
 package ch.heigvd.iict.sym.labo2
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // link UI
         setContentView(R.layout.activity_main)
 
         compressed_button.setOnClickListener {

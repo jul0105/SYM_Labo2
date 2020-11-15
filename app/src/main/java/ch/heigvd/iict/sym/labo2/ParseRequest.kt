@@ -8,8 +8,6 @@
 package ch.heigvd.iict.sym.labo2
 
 import android.util.Xml
-import androidx.annotation.Nullable
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.google.gson.Gson
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -19,7 +17,6 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.io.InputStream
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
@@ -31,16 +28,17 @@ import javax.xml.transform.stream.StreamResult
 
 class ParseRequest {
 
-    companion object{
+    companion object {
 
         // take a list of Person and return it as a serialized XML String
-        fun serializeXML(people: List<Person>): String{
+        fun serializeXML(people: List<Person>): String {
 
-            val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            val docBuilder: DocumentBuilder =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc: Document = docBuilder.newDocument()
             val rootElement: Element = doc.createElement("directory")
 
-            for(itPerson in people){
+            for (itPerson in people) {
                 val person: Element = doc.createElement("person")
                 val name: Element = doc.createElement("name")
                 name.appendChild(doc.createTextNode(itPerson.name))
@@ -63,7 +61,10 @@ class ParseRequest {
             transformer.setOutputProperty(OutputKeys.INDENT, "no")
             transformer.setOutputProperty(OutputKeys.METHOD, "xml")
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
-            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "http://sym.iict.ch/directory.dtd")
+            transformer.setOutputProperty(
+                OutputKeys.DOCTYPE_SYSTEM,
+                "http://sym.iict.ch/directory.dtd"
+            )
 
             val source = DOMSource(doc)
             val sw = StringWriter()
@@ -74,37 +75,37 @@ class ParseRequest {
         }
 
         @Throws(XmlPullParserException::class, IOException::class)
-        fun deserializeXML(people: String): List<Person>{
+        fun deserializeXML(people: String): List<Person> {
             val parser: XmlPullParser = Xml.newPullParser()
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
             parser.setInput(people.byteInputStream(), null)
             parser.nextTag()
 
             val entries = mutableListOf<Person>()
-            while(parser.next() != XmlPullParser.END_TAG){
-                if(parser.eventType != XmlPullParser.START_TAG){
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.eventType != XmlPullParser.START_TAG) {
                     continue
                 }
-                if(parser.name == "person"){
+                if (parser.name == "person") {
                     entries.add(readPerson(parser))
-                }else{
+                } else {
                     skip(parser)
                 }
             }
             return entries
         }
 
-        private fun readPerson(parser: XmlPullParser): Person{
+        private fun readPerson(parser: XmlPullParser): Person {
             var name: String = ""
             var firstname: String = ""
             var gender: String = ""
             var phone: String = ""
             var phoneType: String = ""
-            while(parser.next() != XmlPullParser.END_TAG){
-                if(parser.eventType != XmlPullParser.START_TAG){
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.eventType != XmlPullParser.START_TAG) {
                     continue
                 }
-                when(parser.name){
+                when (parser.name) {
                     "name" -> name = readName(parser)
                     "firstname" -> firstname = readFirstname(parser)
                     "gender" -> gender = readGender(parser)
@@ -113,7 +114,13 @@ class ParseRequest {
                     else -> skip(parser)
                 }
             }
-            return Person(name=name, firstname = firstname, gender = gender, phone = phone, phoneType = phoneType)
+            return Person(
+                name = name,
+                firstname = firstname,
+                gender = gender,
+                phone = phone,
+                phoneType = phoneType
+            )
         }
 
         @Throws(IOException::class, XmlPullParserException::class)
@@ -182,22 +189,23 @@ class ParseRequest {
 
 
         // Take a Person object and return a serialized JSON String
-        fun serializeJSON(person: Person): String{
+        fun serializeJSON(person: Person): String {
             return Gson().toJson(person)
         }
 
         // Take a serialized JSON string and return a Person object
-        fun deserializeJSON(data: String) : Person {
+        fun deserializeJSON(data: String): Person {
             val test = data
-            val person = Gson().fromJson(data,Person::class.java)
+            val person = Gson().fromJson(data, Person::class.java)
             return person
         }
 
         // Take a String serialized object and return a Document
-        fun getDocFromSerializedString(serializedString: String): Document{
+        fun getDocFromSerializedString(serializedString: String): Document {
             val byteArray = serializedString.toByteArray()
             val byteArrayInputStream = ByteArrayInputStream(byteArray)
-            val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            val docBuilder: DocumentBuilder =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc = docBuilder.parse(byteArrayInputStream)
             return doc
         }

@@ -16,8 +16,8 @@ import org.json.JSONObject
 
 class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
-    private lateinit var list_view_authors: ListView;
-    private lateinit var list_view_publication: ListView;
+    private lateinit var list_view_authors: ListView
+    private lateinit var list_view_publication: ListView
 
     val listItems = ArrayList<Author>()
     val listPublications = ArrayList<Publication>()
@@ -28,11 +28,12 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph_q_l)
 
-        list_view_authors = findViewById(R.id.listViewAuthors);
-        list_view_publication = findViewById(R.id.listViewPublication);
+        list_view_authors = findViewById(R.id.listViewAuthors)
+        list_view_publication = findViewById(R.id.listViewPublication)
 
         adapterAuthor = ArrayAdapter(this, android.R.layout.simple_list_item_1, listItems)
-        adapterPublication = ArrayAdapter(this, android.R.layout.simple_list_item_1, listPublications)
+        adapterPublication =
+            ArrayAdapter(this, android.R.layout.simple_list_item_1, listPublications)
 
         list_view_authors.adapter = adapterAuthor
         list_view_publication.adapter = adapterPublication
@@ -41,8 +42,8 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
             sm.sendRequest(
                 "http://sym.iict.ch/api/graphql",
-                "{\"query\":\"{allPostByAuthor(authorId: " + listItems[position].id +" ){id title description content date}}\"}"
-            );
+                "{\"query\":\"{allPostByAuthor(authorId: " + listItems[position].id + " ){id title description content date}}\"}"
+            )
 
         }
 
@@ -50,7 +51,7 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
         sm.sendRequest(
             "http://sym.iict.ch/api/graphql",
             "{\"query\":\"{allAuthors {id first_name last_name}}\"}"
-        );
+        )
 
     }
 
@@ -60,7 +61,7 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
         val data = reader.getJSONObject("data")
         // get authors if allAuthors executed
 
-        if(response.contains("allAuthors")) {
+        if (response.contains("allAuthors")) {
             val authors = data.getJSONArray("allAuthors")
             for (i in 0 until authors.length()) {
                 val author = authors.getJSONObject(i)
@@ -90,14 +91,15 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 }
 
 data class AuthorList(val author_list: ArrayList<Author>)
-data class Author(val id : Int, val first_name : String, val last_name : String) {
+data class Author(val id: Int, val first_name: String, val last_name: String) {
     override fun toString(): String {
-        return this.first_name + " " + this.last_name;
+        return this.first_name + " " + this.last_name
     }
 }
+
 data class Publication(val id: Int, val title: String, val description: String) {
     override fun toString(): String {
-        return this.title + " : " + this.description;
+        return this.title + " : " + this.description
     }
 }
 

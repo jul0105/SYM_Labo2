@@ -7,14 +7,11 @@
 
 package ch.heigvd.iict.sym.labo2
 
-import android.app.job.JobInfo
-import android.app.job.JobService
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import java.util.stream.DoubleStream.builder
+import androidx.appcompat.app.AppCompatActivity
 
 class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
     private lateinit var send_button: Button
@@ -24,13 +21,13 @@ class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
     private var messageToSend = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_differee)
 
-        send_button = findViewById(R.id.send_button);
-        text_input = findViewById(R.id.send_text);
-        received_text = findViewById(R.id.received_text);
+        send_button = findViewById(R.id.send_button)
+        text_input = findViewById(R.id.send_text)
+        received_text = findViewById(R.id.received_text)
 
         val sm = SymComManager(this)
 
@@ -39,15 +36,15 @@ class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
 
             messageToSend = text_input.text.toString()
 
-            object: Thread(){
-                override fun run(){
-                    while(!receivedResponse){
-                        try{
-                            sm.sendRequest("http://sym.iict.ch/rest/txt/", messageToSend);
-                        }catch(e: Exception){
+            object : Thread() {
+                override fun run() {
+                    while (!receivedResponse) {
+                        try {
+                            sm.sendRequest("http://sym.iict.ch/rest/txt/", messageToSend)
+                        } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                        Thread.sleep(5000);
+                        Thread.sleep(5000)
                     }
                 }
             }.start()
@@ -56,7 +53,7 @@ class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
 
     override fun handleServerResponse(response: String) {
         receivedResponse = true
-        received_text.text = response;
+        received_text.text = response
     }
 
 

@@ -7,7 +7,6 @@
 
 package ch.heigvd.iict.sym.labo2
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Button
 import android.widget.RadioGroup
@@ -15,26 +14,26 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
-class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
-    private lateinit var send_button: Button;
-    private lateinit var radio_group: RadioGroup;
-    private lateinit var received_text: TextView;
+class SerialisationActivity : AppCompatActivity(), CommunicationEventListener {
+    private lateinit var send_button: Button
+    private lateinit var radio_group: RadioGroup
+    private lateinit var received_text: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_serialisation);
+        setContentView(R.layout.activity_serialisation)
 
-        send_button = findViewById(R.id.send_button);
-        received_text = findViewById(R.id.received_text);
-        radio_group = findViewById(R.id.radioGroup);
+        send_button = findViewById(R.id.send_button)
+        received_text = findViewById(R.id.received_text)
+        radio_group = findViewById(R.id.radioGroup)
 
         val sm = SymComManager(this)
 
         send_button.setOnClickListener {
 
-            var serialisedData: String;
-            if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
+            var serialisedData: String
+            if (radio_group.checkedRadioButtonId == R.id.radio_xml) {
 
                 val person1 = Person(name = "Cuenoud", firstname = "Robin", gender = "male", phone = "0795643255", phoneType = "mobile")
                 val person2 = Person(name = "Beguin", firstname = "Julien", gender = "male", phone = "0786759988", phoneType = "mobile")
@@ -42,31 +41,29 @@ class SerialisationActivity : AppCompatActivity() , CommunicationEventListener {
                 val people = listOf<Person>(person1, person2, person3)
 
                 serialisedData = ParseRequest.serializeXML(people)
-                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData,"application/xml");
-            }
-            else  {
+                sm.sendRequest("http://sym.iict.ch/rest/xml/", serialisedData, "application/xml")
+            } else {
 
                 val person = Person("Daubresse", "Gaetan", "Joel", "male", "0793345432", "mobile")
                 val jsonString = ParseRequest.serializeJSON(person)
-                sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString,"application/json");
+                sm.sendRequest("http://sym.iict.ch/rest/json/", jsonString, "application/json")
             }
         }
     }
 
     override fun handleServerResponse(response: String) {
 
-        if(radio_group.checkedRadioButtonId == R.id.radio_xml) {
+        if (radio_group.checkedRadioButtonId == R.id.radio_xml) {
             val listPerson = ParseRequest.deserializeXML(response)
             var responseFormated: String = ""
             responseFormated += "Hello "
-            for(person in listPerson){
+            for (person in listPerson) {
                 responseFormated += (person.firstname + " ")
             }
             received_text.text = responseFormated
-        }
-        else { // JSON
-            val person = ParseRequest.deserializeJSON(response);
-            received_text.text = "Hello " +person.firstname + " ," + person.name;
+        } else { // JSON
+            val person = ParseRequest.deserializeJSON(response)
+            received_text.text = "Hello " + person.firstname + " ," + person.name
         }
     }
 }

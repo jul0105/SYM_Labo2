@@ -8,12 +8,10 @@
 package ch.heigvd.iict.sym.labo2
 
 import java.io.BufferedReader
-import java.io.DataInputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.nio.charset.StandardCharsets
 import java.util.zip.Deflater
 import java.util.zip.DeflaterOutputStream
 import java.util.zip.Inflater
@@ -22,13 +20,18 @@ import kotlin.text.Charsets.UTF_8
 
 class SymComManager(var communicationEventListener: CommunicationEventListener? = null) {
 
-    fun sendRequest(url: String, request: String, content_type: String = "text/plain", compressed: Boolean = false) =
+    fun sendRequest(
+        url: String,
+        request: String,
+        content_type: String = "text/plain",
+        compressed: Boolean = false
+    ) =
         object : Thread() {
 
 
             override fun run() {
 
-                val serverURL: String = url;
+                val serverURL: String = url
                 val connection = URL(serverURL).openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.doOutput = true
@@ -40,7 +43,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                 connection.setRequestProperty("Content-Type", content_type)
                 if (compressed) {
                     connection.setRequestProperty("X-Network", "CSD")
-                    connection.setRequestProperty("X-Content-Encoding", "deflate");
+                    connection.setRequestProperty("X-Content-Encoding", "deflate")
                 }
 
 
@@ -49,8 +52,9 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     val outputStream: OutputStream
 
                     if (compressed) {
-                        outputStream = DeflaterOutputStream(connection.outputStream, Deflater(9, true))
-                    }  else {
+                        outputStream =
+                            DeflaterOutputStream(connection.outputStream, Deflater(9, true))
+                    } else {
                         outputStream = connection.outputStream
                     }
 
@@ -67,7 +71,12 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                 try {
                     val inputStream: InputStreamReader
                     if (connection.headerFields["X-Content-Encoding"]?.get(0).equals("deflate")) {
-                        inputStream = InputStreamReader(InflaterInputStream(connection.inputStream, Inflater(true)))
+                        inputStream = InputStreamReader(
+                            InflaterInputStream(
+                                connection.inputStream,
+                                Inflater(true)
+                            )
+                        )
                     } else {
                         inputStream = InputStreamReader(connection.inputStream)
                     }
@@ -75,7 +84,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     val reader: BufferedReader = BufferedReader(inputStream)
                     val output: String = reader.readText()
 
-                    communicationEventListener?.handleServerResponse(output);
+                    communicationEventListener?.handleServerResponse(output)
 
                 } catch (exception: Exception) {
                     exception.printStackTrace()

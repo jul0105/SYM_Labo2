@@ -24,13 +24,14 @@ class AsynchroneActivity : AppCompatActivity(), CommunicationEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // link UI
         setContentView(R.layout.activity_asynchrone)
 
         send_button = findViewById(R.id.send_button)
         text_input = findViewById(R.id.send_text)
         received_text = findViewById(R.id.received_text)
 
-
+        // Send content
         val sm = SymComManager(this)
 
         send_button.setOnClickListener {

@@ -26,6 +26,8 @@ class GraphQLActivity : AppCompatActivity(), CommunicationEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // link UI
         setContentView(R.layout.activity_graph_q_l)
 
         list_view_authors = findViewById(R.id.listViewAuthors)

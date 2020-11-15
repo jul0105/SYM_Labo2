@@ -28,16 +28,16 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
     ) =
         object : Thread() {
 
-
             override fun run() {
 
-                val serverURL: String = url
-                val connection = URL(serverURL).openConnection() as HttpURLConnection
+                // init connection
+                val connection = URL(url).openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.doOutput = true
 
                 val postData: ByteArray = request.toByteArray(UTF_8)
 
+                // set HTTP headers
                 connection.setRequestProperty("charset", "utf-8")
                 connection.setRequestProperty("Content-lenght", postData.size.toString())
                 connection.setRequestProperty("Content-Type", content_type)
@@ -46,14 +46,13 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     connection.setRequestProperty("X-Content-Encoding", "deflate")
                 }
 
-
                 // send request
                 try {
                     val outputStream: OutputStream
 
                     if (compressed) {
-                        outputStream =
-                            DeflaterOutputStream(connection.outputStream, Deflater(9, true))
+                        // get compression steam
+                        outputStream = DeflaterOutputStream(connection.outputStream, Deflater(9, true))
                     } else {
                         outputStream = connection.outputStream
                     }
@@ -65,12 +64,11 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     return
                 }
 
-                println(connection.responseCode)
-
                 // receive response
                 try {
                     val inputStream: InputStreamReader
                     if (connection.headerFields["X-Content-Encoding"]?.get(0).equals("deflate")) {
+                        // get compression steam
                         inputStream = InputStreamReader(
                             InflaterInputStream(
                                 connection.inputStream,
@@ -84,13 +82,13 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     val reader: BufferedReader = BufferedReader(inputStream)
                     val output: String = reader.readText()
 
+                    // send response to listener
                     communicationEventListener?.handleServerResponse(output)
 
                 } catch (exception: Exception) {
                     exception.printStackTrace()
                     return
                 }
-
 
             }
         }.start()

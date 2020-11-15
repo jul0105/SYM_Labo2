@@ -23,6 +23,7 @@ class DiffereeActivity : AppCompatActivity(), CommunicationEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // link UI
         setContentView(R.layout.activity_differee)
 
         send_button = findViewById(R.id.send_button)

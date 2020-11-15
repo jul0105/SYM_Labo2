@@ -25,9 +25,13 @@ TODO
 > Les classes et interfaces SymComManager et CommunicationEventListener, utilisées au point 3.1, restent très (et certainement trop) simples pour être utilisables dans une vraie application : que se passe-t-il si le serveur n’est pas joignable dans l’immédiat ou s’il retourne un code HTTP d’erreur ?
 > Veuillez proposer une nouvelle version, mieux adaptée, de ces deux classes / interfaces pour vous aider à illustrer votre réponse.
 
-TODO
+Si le serveur n'est pas joignable l'instance de HttpURLConnection va générer une exception. Elle sera traitée par le bloque catch et la StackTrace sera affichée dans la console. Depuis l'application mobile l'utilisateur ne se rendra pas compte de cette injoignabilité et ne recevra simplement pas de réponse du serveur. 
 
+Nous pourrions améliorer le comportement en vérifiant au préalable si le téléphone est connecté à internet et en remontant le message d'erreur à l'utilisateur. 
 
+Si le serveur renvoie un code d'erreur il y'a également un exception qui est levée. 
+
+Une amélioration que nous pourrions imaginer consisterai à remonter le code d'erreur à l'utilisateur ou d'effectuer un traitement différents suivant le code d'erreur retourné.
 
 ### Authentification
 
@@ -57,11 +61,11 @@ Il vaut donc mieux d'éviter cette solution également (même si possible en th�
 
 > Lors de l'utilisation de protocoles asynchrones, c'est généralement deux threads différents qui se répartissent les différentes étapes (préparation, envoi, réception et traitement des données) de la communication. Quels problèmes cela peut-il poser ?
 
-TODO
+Si les deux threads partagent des mêmes ressources, il pourrait y avoir des problème de concurrences. Il faudrait donc protéger ces ressources partagées à l'aide de verrous. Il est également possible que l'ordre d'exécution des threads puisse varier en fonction des décisions prisent par l'ordonnanceur. Il est donc important qu'une synchronisation soit fait entre les deux threads. 
 
 
 
-### Ecriture différée
+### Écriture différée
 
 > Lorsque l'on implémente l'écriture différée, il arrive que l'on ait soudainement plusieurs transmissions en attente qui deviennent possibles simultanément. Comment implémenter proprement cette situation ? Voici deux possibilités :
 >
@@ -69,7 +73,9 @@ TODO
 > - Multiplexer toutes les connexions vers un même serveur en une seule connexion de transport. Dans ce dernier cas, comment implémenter le protocole applicatif, quels avantages peut-on espérer de ce multiplexage, et surtout, comment doit-on planifier les réponses du serveur
 >   lorsque ces dernières s'avèrent nécessaires ? Comparer les deux techniques (et éventuellement d'autres que vous pourriez imaginer) et discuter des avantages et inconvénients respectifs.
 
-TODO
+L'utilisation d'une connexion par transmission différée sera plus propice à l'envoi de fichier volumineux. Elle est également à privilégier lorsque la connexion n'est pas stable. 
+
+L'avantage du multiplexage est que cela permet de traiter un nombre supérieur de requête comparé à la transmission différée. Cela facilite également le partage d'une même ressource entres différentes activités. 
 
 
 
@@ -77,17 +83,15 @@ TODO
 
 > a. Quel inconvénient y a-t-il à utiliser une infrastructure de type REST/JSON n'offrant aucun service de validation (DTD, XML-schéma, WSDL) par rapport à une infrastructure comme SOAP offrant ces possibilités ? Est-ce qu’il y a en revanche des avantages que vous pouvez citer ?
 
-TODO
+L'utilisation de JSON est légèrement plus léger que le XML. Nous nous somme également rendu compte que le sérialisation et désérialisation se faisait plus simplement qu'en XML. Notamment grâce à l'utilisation de librairie comme Gson(). Il existe également un librairie appelée Jackson pour sérialiser du XML mais nous avons eu plus de mal à la prendre en main et avons donc d'effectuer la sérialisation/déserialisation "à la main". 
 
 > b. L’utilisation d’un mécanisme comme Protocol Buffers5 est-elle compatible avec une architecture basée sur HTTP ? Veuillez discuter des éventuelles avantages ou limitations par rapport à un protocole basé sur JSON ou XML ?
 
-TODO
+Son avantage premier est sa légèreté comparé au JSON et XML. Il est également possible d'effectuer des vérifications sur sa structure de donnée. Par contre, il est très difficile voir impossible de le lire sans un désérialiseur.  
 
 > c. Par rapport à l’API GraphQL mise à disposition pour ce laboratoire. Avez-vous constaté des points qui pourraient être améliorés pour une utilisation mobile ? Veuillez en discuter, vous pouvez élargir votre réflexion à une problématique plus large que la manipulation effectuée.
 
-TODO
-
-
+Nous pouvons observer que certaines grandes requêtes peuvent consommer beaucoup de donnée. Une solution pourrait être de garder en cache les réponses afin d'économiser les ressources. Il faudrait néanmoins vérifier que la base de donnée n'a pas changé entre temps. Nous pourrions également faire de la compression. 
 
 ### Transmission compressée
 
@@ -108,8 +112,6 @@ A l'opposer, lorsque le nombre de caractère est très faible (< 50 caractères)
 
 A noter que nous avons également effectué ce test avec du contenu de type xml et json et les résultats sont similaires.
 
-
-
 ## Conclusion
 
-TODO
+Ce laboratoire nous a permis de découvrir différents mode de transmission entre une application mobile et un serveur. Nous avons du appréhender des problématiques différentes que celle rencontrées lors de développement d'application pour ordinateur. 

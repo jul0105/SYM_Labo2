@@ -49,7 +49,7 @@ class SymComManager(var communicationEventListener: CommunicationEventListener? 
                     communicationEventListener?.handleServerResponse(output);
 
                 } catch (exception: Exception) {
-
+                println(exception)
                 }
 
 
